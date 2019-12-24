@@ -1,53 +1,53 @@
 #include "VarSpeedServo.h"
 
-VarSpeedServo servo1;   //four servos defined
+VarSpeedServo servo1;   //Definition of 4 servos in the LibVarSpeedServo
 VarSpeedServo servo2;
 VarSpeedServo servo3;
 VarSpeedServo servo4;
 
-int potpin1 = 0;        //Définir le port A0 d'entrée horizontale du joystick gauche
-int potpin2 = 1;        //Définissez le joystick gauche pour entrer le port A1 dans le sens vertical
-int potpin3 = 2;        //Définir le port d'entrée droite du joystick horizontal A2
-int potpin4 = 3;        //Définissez le joystick droit pour entrer le port A3 verticalement.
+int axeX1 = 0;        //Def of horizontal axe left joystick pin to read
+int axeY1 = 1;        //Def of vertical axe left joystick pin to read
+int axeX2 = 2;        //Def of horizontal axe right joystick pin to read
+int axeY2 = 3;        //Def of vertical axe right joystick pin to read
 
-int val1;
-int val2;
-int val3;
-int val4;
+int X1;                   //Buffer for sticks values
+int Y1;
+int X2;
+int Y2;
 
-static int base = 70;         //Définit l'angle initial du servo de base à 70
-static int minibras = 110;    //Définir l'angle initial du servo de base à 110
-static int bras = 100;        //Définir l'angle initial du grand appareil à 100
-static int pince = 80;        //Définir l'angle initial du servo de patte à 80
+static int base = 70;         //
+static int minibras = 110;    //
+static int bras = 100;        //
+static int pince = 80;        //
 
-int salute = 0;
+int Globinit = 0;
 
 void setup()
 {
   Serial.begin(9600);
-  servo1.attach(11);          //definition de l'attache de chaque servo sur les bornes 11 ect
+  servo1.attach(11);          //Physical declaration of the 4 servos to work w/
   servo2.attach(10);
   servo3.attach(9);
   servo4.attach(6);
 
-  servo1.write(70);     //base                             maz
+  servo1.write(70);     //base
   servo2.write(110);    //bras
   servo3.write(100);    //mini bras
   servo4.write(80);     //pince 80-120
 
-  //Serial.begin(9600);
+  Serial.begin(9600);
 }
 void loop()
 {
-  if (salute == 0)
+  if (Globinit == 0)                    //Only run once to know that the code is running
   {
-    Serial.println("Hi master ^^");
-    salute = 42 ;
+    Serial.println("Hi master ^^");  //Only for my unsized ego ^^
+    Globinit = 42 ;
   }
-  /////Contrôle de base///////
-  val1 = analogRead(potpin1);         //de 10 à 170
+                                         /////Contrôle de base///////
+  X1 = analogRead(axeX1);
 
-  if (val1 < 100)
+  if (X1 < 100)
   {
     base = base - 1;
     if (base <= 10)
@@ -60,7 +60,7 @@ void loop()
 
     delay(50);
   }
-  if (val1 > 900)
+  if (X1 > 900)
   {
     Serial.print("base : ");
     Serial.println(base);
@@ -74,10 +74,10 @@ void loop()
     delay(50);
   }
 
-  //////Bras de commande de direction///////
-  val2 = analogRead(potpin2);     //10 à 170
+                                           //////Bras de commande de direction///////
+  Y1 = analogRead(axeY1);
 
-  if (val2 > 900)
+  if (Y1 > 900)
   {
     minibras = minibras - 1;
     if (minibras <= 10)
@@ -90,7 +90,7 @@ void loop()
 
     delay(50);
   }
-  if (val2 < 100)
+  if (Y1 < 100)
   {
     Serial.print("minibras : ");
     Serial.println(minibras);
@@ -104,11 +104,11 @@ void loop()
     delay(50);
   }
 
-  //////Commande de direction à gros bras///////
-  val3 = analogRead(potpin3);              //10 to170
+                                           //////Commande de direction à gros bras///////
+  X2 = analogRead(axeX2);
 
 
-  if (val3 < 100)
+  if (X2 < 100)
   {
     bras = bras - 1;
     if (bras <= 10)
@@ -121,7 +121,7 @@ void loop()
 
     delay(50);
   }
-  if (val3 > 900)
+  if (X2 > 900)
   {
     Serial.print("bras : ");
     Serial.println(bras);
@@ -130,15 +130,15 @@ void loop()
     {
       bras = 170;
     }
-    servo3.write(bras); 
+    servo3.write(bras);
 
     delay(50);
   }
 
-  //////Servocommande griffe///////
-  val4 = analogRead(potpin4);               //80 to 130
+                                           //////Servocommande griffe///////
+  Y2 = analogRead(axeY2);
 
-  if (val4 < 100)
+  if (Y2 < 100)
   {
     pince = pince - 1;
     if (pince <= 80)
@@ -152,7 +152,7 @@ void loop()
 
     delay(50);
   }
-  if (val4 > 900)
+  if (Y2 > 900)
   {
     Serial.print("pince : ");
     Serial.println(pince);
