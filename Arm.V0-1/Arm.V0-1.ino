@@ -1,3 +1,6 @@
+ /*Little improvements by Kahloyx kahloyx@gmail.com 2020*/
+
+
 #include "VarSpeedServo.h"
 
 VarSpeedServo servo1;   //Definition of 4 servos in the LibVarSpeedServo
@@ -44,7 +47,7 @@ void loop()
     Serial.println("Hi master ^^");  //Only for my unsized ego ^^
     Globinit = 42 ;
   }
-                                         /////Contrôle de base///////
+                                         ////////Base Movement///////
   X1 = analogRead(axeX1);
 
   if (X1 < 100)
@@ -135,7 +138,7 @@ void loop()
     delay(50);
   }
 
-                                           //////Servocommande griffe///////
+                                           //////Hook///////
   Y2 = analogRead(axeY2);
 
   if (Y2 < 100)
