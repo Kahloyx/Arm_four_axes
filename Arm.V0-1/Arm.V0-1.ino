@@ -1,7 +1,58 @@
- /*Little improvements by Kahloyx kahloyx@gmail.com 2020*/
+/*Little improvements by Kahloyx kahloyx@gmail.com 2020*/
+
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+#define OLED_RESET     4 // Reset pin # (or -1 if sharing Arduino reset pin)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+#define NUMFLAKES     8// Number of snowflakes in the animation example
+
+#define LOGO_HEIGHT   32
+#define LOGO_WIDTH    32
+static const unsigned char PROGMEM logo_bmp[] = {
+  B00000000, B00111111, B11111100, B00000000,
+  B00000000, B11110000, B00000011, B10000000,
+  B00000011, B00000000, B00000000, B01100000,
+  B00000100, B00000000, B00000000, B00010000,
+  B00001000, B00000000, B00000000, B00001000,
+  B00110000, B00000000, B00000000, B00000110,
+  B01000000, B00000000, B00000000, B00000010,
+  B10000000, B00000000, B00000000, B00000001,
+  B10000000, B00000000, B00000000, B00000001,
+  B10000000, B00000000, B00000000, B00000001,
+  B10000111, B11000000, B00000011, B11100001,
+  B10011111, B11100000, B00000111, B11111001,
+  B10111111, B11110000, B00001111, B11111101,
+  B10111110, B01110000, B00001110, B01111101,
+  B01111110, B01110000, B00001110, B01111110,
+  B01011111, B11100001, B10000111, B11111010,
+  B00100111, B11100001, B10000111, B11100100,
+  B00100000, B01000011, B11000010, B00000100,
+  B01000001, B10000011, B11000001, B10000010,
+  B01000100, B00000011, B11000000, B00100010,
+  B01000100, B00000000, B00000000, B00100010,
+  B01001101, B10000000, B00000001, B11110010,
+  B00100101, B00111111, B11111110, B11100100,
+  B00100011, B00010010, B00100010, B10000100,
+  B00010001, B10010010, B00100011, B00001000,
+  B00001000, B01110010, B00100110, B00010000,
+  B00000110, B00011111, B11111000, B01100000,
+  B00000001, B11000000, B00000011, B10000000,
+  B00000000, B00111111, B11111100, B00000000,
+  B00000000, B00000000, B00000000, B00000000,
+  B00000000, B00000000, B00000000, B00000000,
+  B00000000, B00000000, B00000000, B00000000
+};                                                //All the above declarations are made for the i2c oled screen dual color (yellow on top and blue for the rest)
 
 
-#include "VarSpeedServo.h"
+#include "VarSpeedServo.h" //Lib of arm Servos based on the built-in lib of arduino, available on the git repo
 
 VarSpeedServo servo1;   //Definition of 4 servos in the LibVarSpeedServo
 VarSpeedServo servo2;
@@ -28,6 +79,7 @@ int Globinit = 0;
 void setup()
 {
   Serial.begin(9600);
+  display.invertDisplay(true);
   servo1.attach(11);          //Physical declaration of the 4 servos to work w/
   servo2.attach(10);
   servo3.attach(9);
@@ -37,17 +89,24 @@ void setup()
   servo2.write(110);    //bras
   servo3.write(100);    //mini bras
   servo4.write(80);     //pince 80-120
-
-  Serial.begin(9600);
+  delay(1000)
+  display.invertDisplay(false);
+  display.clearDisplay();
+  display.setTextSize(1);                     // Draw 1X-scale text
+  display.setCursor(0, 16);                   //Set cursor in th blue oled screen part
+  display.println("Hi sempaii, let's start");
+  display.display();
 }
+
+
 void loop()
 {
   if (Globinit == 0)                    //Only run once to know that the code is running
   {
-    Serial.println("Hi master ^^");  //Only for my unsized ego ^^
+    Serial.println("Let's start !");
     Globinit = 42 ;
   }
-                                         ////////Base Movement///////
+                                                    ////////Base Rotation///////
   X1 = analogRead(axeX1);
 
   if (X1 < 100)
@@ -77,7 +136,7 @@ void loop()
     delay(50);
   }
 
-                                           //////Bras de commande de direction///////
+                                                //////Main arm///////
   Y1 = analogRead(axeY1);
 
   if (Y1 > 900)
@@ -107,7 +166,7 @@ void loop()
     delay(50);
   }
 
-                                           //////Commande de direction à gros bras///////
+                                                            //////Base arm///////
   X2 = analogRead(axeX2);
 
 
@@ -138,7 +197,7 @@ void loop()
     delay(50);
   }
 
-                                           //////Hook///////
+                                                                        //////Hook///////
   Y2 = analogRead(axeY2);
 
   if (Y2 < 100)
@@ -168,5 +227,4 @@ void loop()
 
     delay(50);
   }
-
 }
