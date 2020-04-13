@@ -70,32 +70,49 @@ int X2;
 int Y2;
 
 static int base = 70;         //
-static int minibras = 110;    //
-static int bras = 100;        //
+static int minibras = 100;    //
+static int bras = 110;        //
 static int pince = 80;        //
 
 int Globinit = 0;
 
 void setup()
 {
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x64
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;); // Don't proceed, loop forever
+  }
   Serial.begin(9600);
+  display.clearDisplay();
+  display.display();
   display.invertDisplay(true);
   servo1.attach(11);          //Physical declaration of the 4 servos to work w/
   servo2.attach(10);
   servo3.attach(9);
   servo4.attach(6);
-
-  servo1.write(70);     //base
-  servo2.write(110);    //bras
-  servo3.write(100);    //mini bras
-  servo4.write(80);     //pince 80-120
-  delay(1000)
+                                      //init of servos (bullshiting bc it all move)
+  //servo1.write(84);     //base
+  //servo2.write(110);    //bras
+  //servo3.write(100);    //mini bras
+  //servo4.write(80);     //pince 80-120
+  delay(500);
   display.invertDisplay(false);
+  delay(500);
   display.clearDisplay();
-  display.setTextSize(1);                     // Draw 1X-scale text
-  display.setCursor(0, 16);                   //Set cursor in th blue oled screen part
-  display.println("Hi sempaii, let's start");
   display.display();
+  delay(50);
+  display.setTextSize(2);                     // Draw 1X-scale text
+  display.setCursor(0, 16);                   //Set cursor in th blue oled screen part
+  display.setTextColor(SSD1306_WHITE);
+  display.println(F("Hi Kah san"));
+  display.display();
+  delay(1000);
+  display.setCursor(0, 48);
+  display.setTextColor(SSD1306_WHITE);
+  display.println("Let's go !");
+  display.display();
+  delay(2000);
+  //rndmlines();
 }
 
 
@@ -118,7 +135,7 @@ void loop()
     }
     Serial.print("base : ");
     Serial.println(base);
-    servo1.write(base);
+    servo1.write(base, 126);
 
     delay(50);
   }
